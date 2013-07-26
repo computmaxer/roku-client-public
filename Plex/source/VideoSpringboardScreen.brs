@@ -67,10 +67,15 @@ Sub videoSetupButtons()
         endif
 
         ' Rotten Tomatoes ratings, if enabled
-        if RegRead("rottentomatoes", "preferences", "disabled") = "enabled" then
+        if m.metadata.ContentType = "movie" AND RegRead("rottentomatoes", "preferences", "disabled") = "enabled" then
             tomatoData = m.metadata.tomatoData
             if tomatoData <> invalid AND tomatoData.ratings <> invalid AND tomatoData.ratings.critics_score <> invalid then
-                m.AddButton(tostr(tomatoData.ratings.critics_score) + "% on Rotten Tomatoes", "tomatoes")
+                if tomatoData.ratings.critics_score = -1 then
+                    rating_string = "Not rated"
+                else
+                    rating_string = tostr(tomatoData.ratings.critics_score) + "%"
+                endif
+                m.AddButton(rating_string + " on Rotten Tomatoes", "tomatoes")
             endif
         endif
 
@@ -89,7 +94,7 @@ Sub videoGetMediaDetails(content)
     Debug("About to fetch meta-data for Content Type: " + tostr(content.contentType))
 
     m.metadata = content.ParseDetails()
-    if RegRead("rottentomatoes", "preferences", "disabled") = "enabled" then
+    if m.metadata.ContentType = "movie" AND RegRead("rottentomatoes", "preferences", "disabled") = "enabled" then
         m.metadata.tomatoData = getRottenTomatoesData(m.metadata.actualTitle)
     endif
     m.media = m.metadata.preferredMediaItem
