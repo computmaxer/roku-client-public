@@ -70,7 +70,8 @@ Sub setVideoBasics(video, container, item)
     video.viewCount = item@viewCount
     video.Watched = video.viewCount <> invalid AND val(video.viewCount) > 0
 
-    video.ShortDescriptionLine1 = firstOf(item@title, item@name)
+    video.actualTitle = firstOf(item@title, item@name)
+    video.ShortDescriptionLine1 = video.actualTitle
 
     ' Bookmark position represents the last watched so a video could be marked watched but
     ' have a bookmark not at the end if it was a subsequent viewing
